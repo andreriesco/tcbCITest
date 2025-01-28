@@ -572,6 +572,13 @@ function runTask () {
                 $taskCmd = _replaceDockerHost($taskCmd)
             }
 
+            # run dependencies
+            if ($runDeps -eq $true) {
+                for ($j = 0; $j -lt $taskDepends.Count; $j++) {
+                    runTask $taskDepends[$j]
+                }
+            }
+
             # inject env
             if ($null -ne $taskEnv) {
                 $envs = $taskEnv
@@ -595,13 +602,6 @@ function runTask () {
                             )
                         }
                     }
-                }
-            }
-
-            # run dependencies
-            if ($runDeps -eq $true) {
-                for ($j = 0; $j -lt $taskDepends.Count; $j++) {
-                    runTask $taskDepends[$j]
                 }
             }
 
