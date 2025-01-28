@@ -560,6 +560,13 @@ function runTask () {
             $taskEnv = $task.options.env
             $taskCwd = $task.options.cwd
 
+            # run dependencies
+            if ($runDeps -eq $true) {
+                for ($j = 0; $j -lt $taskDepends.Count; $j++) {
+                    runTask $taskDepends[$j]
+                }
+            }
+
             $isBackground = ""
             if ($task.isBackground -eq $true) {
                 $isBackground = " &"
@@ -570,13 +577,6 @@ function runTask () {
             # is gitlab ci
             if ($_gitlab_ci -eq $true) {
                 $taskCmd = _replaceDockerHost($taskCmd)
-            }
-
-            # run dependencies
-            if ($runDeps -eq $true) {
-                for ($j = 0; $j -lt $taskDepends.Count; $j++) {
-                    runTask $taskDepends[$j]
-                }
             }
 
             # inject env
