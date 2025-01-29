@@ -560,13 +560,6 @@ function runTask () {
             $taskEnv = $task.options.env
             $taskCwd = $task.options.cwd
 
-            # run dependencies
-            if ($runDeps -eq $true) {
-                for ($j = 0; $j -lt $taskDepends.Count; $j++) {
-                    runTask $taskDepends[$j]
-                }
-            }
-
             $isBackground = ""
             if ($task.isBackground -eq $true) {
                 $isBackground = " &"
@@ -602,6 +595,13 @@ function runTask () {
                             )
                         }
                     }
+                }
+            }
+
+            # run dependencies
+            if ($runDeps -eq $true) {
+                for ($j = 0; $j -lt $taskDepends.Count; $j++) {
+                    runTask $taskDepends[$j]
                 }
             }
 
