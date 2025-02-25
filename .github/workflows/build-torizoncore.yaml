@@ -35,6 +35,7 @@ jobs:
           TASKS_OVERRIDE_ENV: "False"
         run: |
           xonsh ./.vscode/tasks.xsh run tcb-setup
+          ls
           xonsh ./.vscode/tasks.xsh run tcb-build
 
       - name: Push OS Package to Platform
