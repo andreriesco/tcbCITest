@@ -313,5 +313,6 @@ if [[ ! -z "${VSCODE_CMD}" ]]; then
     # solve any environment variable
     VSCODE_CMD=$(eval echo $VSCODE_CMD)
     # execute it
+    torizoncore-builder ls
     torizoncore-builder $VSCODE_CMD
 fi
