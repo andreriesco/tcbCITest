@@ -302,7 +302,7 @@ function tcb_dynamic_params() {
 # TODO Not compatible with ZSH
 export -f tcb_dynamic_params
 echo $working_directory
-alias torizoncore-builder='docker run --rm'"$volumes"' -v '"$working_directory"':/workdir -v '"$storage"':/storage -v /var/run/docker.sock:/var/run/docker.sock'"$network"' '"$(tcb_dynamic_params)"' '"$*"' torizon/torizoncore-builder:'"$chosen_tag"
+alias torizoncore-builder='docker run --rm'"$volumes"' -v '"$working_directory"':/workdir -v '"$storage"':/storage -v /var/run/docker/docker.sock:/var/run/docker.sock'"$network"' '"$(tcb_dynamic_params)"' '"$*"' torizon/torizoncore-builder:'"$chosen_tag"
 
 [[ $storage =~ ^[a-zA-Z][a-zA-Z0-9_.-]*$ ]] && storage="Docker volume named '$storage'"
 
@@ -313,6 +313,5 @@ if [[ ! -z "${VSCODE_CMD}" ]]; then
     # solve any environment variable
     VSCODE_CMD=$(eval echo $VSCODE_CMD)
     # execute it
-    torizoncore-builder bash -c "ls"
     torizoncore-builder $VSCODE_CMD
 fi
