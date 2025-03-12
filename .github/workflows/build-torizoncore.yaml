@@ -36,6 +36,7 @@ jobs:
         run: |
           xonsh ./.vscode/tasks.xsh run tcb-setup
           ls
+          env
           xonsh ./.vscode/tasks.xsh run tcb-build
 
       - name: Push OS Package to Platform
