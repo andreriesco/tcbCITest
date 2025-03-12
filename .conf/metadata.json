@@ -1,5 +1,5 @@
 {
-  "templateName": "tcb",
-  "containerName": "tcbcitest",
-  "torizonOSMajor": "7"
+    "templateName": "tcb",
+    "containerName": "tcbcitest",
+    "torizonOSMajor": "7"
 }

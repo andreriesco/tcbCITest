@@ -9,6 +9,8 @@
 
 # use the xonsh environment to update the OS environment
 $UPDATE_OS_ENVIRON = True
+# Get the full log of error
+$XONSH_SHOW_TRACEBACK = True
 # always return if a cmd fails
 $RAISE_SUBPROC_ERROR = True
 
@@ -151,7 +153,7 @@ if not second_run:
     _git_status: CommandPipeline = {}
     _git_status = !(git -C @(project_folder) status)
 
-    if "fatal: not a git repository" in _git_status:
+    if _git_status.err != None and "fatal: not a git repository" in _git_status.err:
         print(
             "❌ fatal: this workspace is not a git repository.",
             color=Color.RED
@@ -185,6 +187,32 @@ if accept_all and not second_run:
             "User abort",
             Error.EABORT
         )
+
+# PROJECT UPDATER - update itself?
+if not _check_if_file_content_is_equal(
+        f"{os.environ['HOME']}/.apollox/scripts/project-updater.xsh",
+        f"{project_folder}/.conf/project-updater.xsh"
+    ):
+    # in this case we need to update the updater itself
+    # and then run it again
+    print("Updater need update ...")
+
+    cp -f \
+        @(f"{os.environ['HOME']}/.apollox/scripts/project-updater.xsh") \
+        @(f"{project_folder}/.conf/project-updater.xsh")
+
+    print("⚠️  project updater updated, running it again", color=Color.YELLOW)
+
+    # run the updater again
+    xonsh \
+        @(f"{project_folder}/.conf/project-updater.xsh") \
+        @(project_folder) \
+        @(accept_all) \
+        @(vscode) \
+        True
+
+    sys.exit(__xonsh__.last.returncode)
+
 
 # get the metadata from templates.json
 _templates_metadata_file = open(f"{os.environ['HOME']}/.apollox/templates.json", "r")
@@ -365,6 +393,11 @@ cp -f \
     @(f"{os.environ['HOME']}/.apollox/scripts/torizon-io.xsh") \
     @(f"{project_folder}/.conf/torizon-io.xsh")
 
+# DOCKER LOGIN:
+cp -f \
+    @(f"{os.environ['HOME']}/.apollox/scripts/docker-login.xsh") \
+    @(f"{project_folder}/.conf/docker-login.xsh")
+
 # CREATE DOCKER COMPOSE PRODUCTION:
 cp -f \
     @(f"{os.environ['HOME']}/.apollox/scripts/create-docker-compose-production.xsh") \
@@ -385,10 +418,20 @@ cp -f \
     @(f"{os.environ['HOME']}/.apollox/scripts/validate-deps-running.xsh") \
     @(f"{project_folder}/.conf/validate-deps-running.xsh")
 
+# APPLY CI SETTINGS FILE:
+cp -f \
+    @(f"{os.environ['HOME']}/.apollox/scripts/apply-ci-settings-file.xsh") \
+    @(f"{project_folder}/.conf/apply-ci-settings-file.xsh")
+
 # TORIZONPACKAGES:
 cp -f \
     @(f"{os.environ['HOME']}/.apollox/scripts/torizon-packages.xsh") \
     @(f"{project_folder}/.conf/torizon-packages.xsh")
+
+# VALIDATE JSON FILES:
+cp -f \
+    @(f"{os.environ['HOME']}/.apollox/scripts/validate-json.xsh") \
+    @(f"{project_folder}/.conf/validate-json.xsh")
 
 # DOCUMENTATION:
 if not os.path.exists(f"{project_folder}/.doc"):
@@ -513,8 +556,6 @@ _deps = json.loads(_deps_file.read())
 _deps_file.close()
 
 if "installDepsScripts" in _deps and len(_deps["installDepsScripts"]) > 0:
-    if not os.path.exists(f"{project_folder}/.conf/installDepsScripts"):
-        mkdir -p @(f"{project_folder}/.conf/installDepsScripts")
 
     if not os.path.exists("./installDepsScripts"):
         mkdir -p @("./installDepsScripts")
@@ -717,12 +758,15 @@ print("✅ common files OK", color=Color.GREEN)
 print("Checking deps scripts ...", color=Color.YELLOW)
 
 if "installDepsScripts" in _deps:
+    if not os.path.exists(f"{project_folder}/.conf/installDepsScripts"):
+        mkdir -p @(f"{project_folder}/.conf/installDepsScripts")
+
     for script in _deps["installDepsScripts"]:
-        _script_dest = script.replace(".conf/", "")
+        _script_src = script.replace(".conf/", "")
 
         _open_merge_window(
-            f"{project_folder}/.conf/tmp/{_script_dest}",
-            f"{project_folder}/{_script_dest}"
+            f"{project_folder}/.conf/tmp/{_script_src}",
+            f"{project_folder}/{_script}"
         )
 
         print(f"✅ {_script_dest}", color=Color.GREEN)
@@ -751,5 +795,11 @@ print("✅ specific files OK", color=Color.GREEN)
 
 # clean up tmp
 rm -rf @(f"{project_folder}/.conf/tmp")
+
+# update metadata.json
+_project_metadata_file = open(f"{project_folder}/.conf/metadata.json", "w")
+_project_metadata["torizonOSMajor"] = _templates_metadata["TorizonOSMajor"]
+_project_metadata_file.write(json.dumps(_project_metadata, indent=4))
+_project_metadata_file.close()
 
 print("\n✅ Update done", color=Color.GREEN)
