@@ -4,7 +4,7 @@ on:
 
 jobs:
   build-deploy:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     name: Build & Deploy TorizonCore
     container:
       image: torizonextras/torizon-dev:dev
