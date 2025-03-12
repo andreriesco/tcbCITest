@@ -13,7 +13,7 @@ fi
 # Edge case for Github Actions dind
 if [ -n "$GITHUB_WORKSPACE" ]; then
     # in this case we need to mount the workspace to the environment
-    working_directory="$GITHUB_WORKSPACE"
+    working_directory=$(cat abs-path)  # "$GITHUB_WORKSPACE"
 else
     # if not set, we use the current directory
     working_directory=$(pwd)
