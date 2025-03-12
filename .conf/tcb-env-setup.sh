@@ -11,9 +11,9 @@ if [ "$DOCKER_REGISTRY" = "" ]; then
 fi
 
 # Edge case for Github Actions dind
-if [ -n "$HOST_GITHUB_WORKSPACE" ]; then
+if [ -n "$GITHUB_WORKSPACE" ]; then
     # in this case we need to mount the workspace to the environment
-    working_directory="$HOST_GITHUB_WORKSPACE"
+    working_directory="$GITHUB_WORKSPACE"
 else
     # if not set, we use the current directory
     working_directory=$(pwd)
