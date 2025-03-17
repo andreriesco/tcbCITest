@@ -37,16 +37,16 @@ initial_setup:
   script:
     - echo $CI_PROJECT_DIR > abs-path
     - cat abs-path
-    - bash -c 'xonsh .conf/validate-json.xsh'
-    - bash -c 'xonsh ./.vscode/tasks.xsh run validate-pipeline-settings'
-    - bash -c 'xonsh ./.conf/apply-ci-settings-file.xsh'
+    - xonsh ./.conf/validate-json.xsh
+    - xonsh ./.vscode/tasks.xsh run validate-pipeline-settings
+    - xonsh ./.conf/apply-ci-settings-file.xsh
     - cat $GITLAB_ENV > build.env
 
   dependencies:
     - get_workspace
   artifacts:
     paths:
-    - abs-path
+      - abs-path
     reports:
       dotenv: build.env
 
@@ -60,9 +60,9 @@ build_image:
       user: root
     entrypoint: [""]
   script:
-    - bash -c 'echo $PLATFORM_CREDENTIALS | base64 -d > credentials.zip'
-    - bash -c 'xonsh ./.vscode/tasks.xsh run tcb-setup'
-    - bash -c 'xonsh ./.vscode/tasks.xsh run tcb-build'
+    - echo $PLATFORM_CREDENTIALS | base64 -d > credentials.zip
+    - xonsh ./.vscode/tasks.xsh run tcb-setup
+    - xonsh ./.vscode/tasks.xsh run tcb-build
 
   dependencies:
     - initial_setup
@@ -76,8 +76,8 @@ push_to_platform:
       user: root
     entrypoint: [""]
   script:
-    - bash -c 'xonsh ./.vscode/tasks.xsh run tcb-setup'
-    - bash -c 'xonsh ./.vscode/tasks.xsh run tcb-platform-push-ostree'
+    - xonsh ./.vscode/tasks.xsh run tcb-setup
+    - xonsh ./.vscode/tasks.xsh run tcb-platform-push-ostree
 
   dependencies:
     - build_image
@@ -90,8 +90,10 @@ deploy_to_fleet:
     docker:
       user: root
     entrypoint: [""]
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "main"'
   script:
-    - bash -c 'if [ "$CI_COMMIT_BRANCH" = "main" ]; then xonsh ./.vscode/tasks.xsh run platform-update-fleet; else echo "Not on main branch, skipping deployment."; fi'
+    - xonsh ./.vscode/tasks.xsh run platform-update-fleet
 
   dependencies:
     - push_to_platform

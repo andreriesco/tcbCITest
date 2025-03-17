@@ -46,9 +46,9 @@ with open(file_path) as f:
     if os.environ["TORIZON_ARCH"] == "armhf":
         os.environ["TORIZON_ARCH"] = "arm"
 
-    if "CI" in os.environ:
+    if "GITLAB_CI" in os.environ:
+            with open(os.environ["GITLAB_ENV"], "a") as f:
+                f.write(f"TORIZON_ARCH={os.environ['TORIZON_ARCH']}\n")
+    elif "CI" in os.environ:
         with open(os.environ["GITHUB_ENV"], "a") as f:
-            f.write(f"TORIZON_ARCH={os.environ['TORIZON_ARCH']}\n")
-    elif "GITLAB_CI" in os.environ:
-        with open(os.environ["GITLAB_ENV"], "a") as f:
             f.write(f"TORIZON_ARCH={os.environ['TORIZON_ARCH']}\n")

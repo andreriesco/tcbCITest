@@ -64,7 +64,7 @@
                 "${workspaceFolder}/.conf/project-updater.xsh",
                 "${workspaceFolder}",
                 "${workspaceFolderBasename}",
-                "0"
+                "False"
             ],
             "dependsOrder": "sequence",
             "dependsOn": [

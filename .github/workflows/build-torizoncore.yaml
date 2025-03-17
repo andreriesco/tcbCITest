@@ -32,7 +32,7 @@ jobs:
 
           echo "${{ github.workspace }}" >> abs-path
           cat abs-path
-          xonsh .conf/validate-json.xsh
+          xonsh ./.conf/validate-json.xsh
           xonsh ./.vscode/tasks.xsh run validate-pipeline-settings
           xonsh ./.conf/apply-ci-settings-file.xsh
 

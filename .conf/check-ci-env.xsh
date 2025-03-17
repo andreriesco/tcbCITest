@@ -58,7 +58,7 @@ _missing_env_var_secrets = False
 _missing_env_var_file_path = False
 
 # check if we are running in a GitLab CI or GitHub Actions environment
-if "GITLAB_CI" not in os.environ or "CI" in os.environ:
+if "CI" in os.environ:
     # validate the env vars
     for _env_var in _env_vars_settings:
         if _env_var not in os.environ and _env_var not in _env_vars_empty_allowed:
