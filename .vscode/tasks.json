@@ -218,9 +218,6 @@
             "command": "DOCKER_HOST=",
             "type": "shell",
             "options": {
-                "env": {
-                    "VSCODE_CMD": "--help"
-                },
                 "cwd": "${workspaceFolder}"
             },
             "args": [

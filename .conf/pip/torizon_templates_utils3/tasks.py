@@ -433,7 +433,7 @@ class TaskRunner:
         self.__can_receive_interactive_input = False
 
         # check if we have stdin
-        if os.isatty(0) and ("TASKS_DISABLE_INTERACTIVE_INPUT" not in os.environ):
+        if os.isatty(0) and (("TASKS_DISABLE_INTERACTIVE_INPUT" not in os.environ) or (os.environ["TASKS_DISABLE_INTERACTIVE_INPUT"] != "True")):
             self.__can_receive_interactive_input = True
 
         # environment configs
@@ -443,10 +443,10 @@ class TaskRunner:
         if "GITLAB_CI" in os.environ:
             self.__gitlab_ci = True
 
-        if "TASKS_OVERRIDE_ENV" in os.environ:
+        if "TASKS_OVERRIDE_ENV" in os.environ and os.environ["TASKS_OVERRIDE_ENV"] == "True":
             self.__override_env = True
 
-        if "TASKS_DEBUG" in os.environ:
+        if "TASKS_DEBUG" in os.environ and os.environ["TASKS_DEBUG"] == "True":
             self.__debug = True
 
         self.__settings_to_env()
@@ -843,7 +843,7 @@ class TaskRunner:
         for dep in _depends:
             self.run_task(dep)
 
-        print("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
+        print("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaabbbbb")
         print(f"> Executing task: {label} <", color=Color.GREEN)
 
         # prepare the command
@@ -896,8 +896,10 @@ class TaskRunner:
             _cmd = self.__replace_docker_host(_cmd)
 
         # inject env
+        #print(_env)
         if _env is not None:
             for env, value in _env.items():
+                #print(value)
                 if self.__override_env:
                     if env not in os.environ:
                         __env = self.__parse_envs(env, _task)
@@ -924,6 +926,9 @@ class TaskRunner:
             print(f"Args: {_task.args}", color=Color.YELLOW)
             print(f"Parsed Args: {_args}", color=Color.YELLOW)
             print(f"Parsed Command: {_cmd_join}", color=Color.YELLOW)
+
+        if 'VSCODE_CMD' in os.environ:
+            print(os.environ['VSCODE_CMD'])
 
         # use bash to execute the VSCode tasks commands and scripts, as they
         # are written and tested in bash. Valid just for commands of shell
