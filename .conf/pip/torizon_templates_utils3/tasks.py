@@ -844,7 +844,7 @@ class TaskRunner:
             self.run_task(dep)
 
         print("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaabbbbb")
-        print(f"> Executing task: {label} <", color=Color.GREEN)
+        print(f"> Executing task: {label} <", color=Color.GREEN, flush=True)
 
         # prepare the command
         _cmd = _task.command
@@ -947,4 +947,4 @@ class TaskRunner:
 
         if _ret.returncode != 0:
             print(f"> TASK [{label}] exited with error code [{_ret.returncode}] <", color=Color.RED)
-            raise RuntimeError(f"Error running taskd: {label}")
+            raise RuntimeError(f"Error running task: {label}")
