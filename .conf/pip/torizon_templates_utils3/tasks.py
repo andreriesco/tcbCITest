@@ -894,6 +894,7 @@ class TaskRunner:
         if self.__gitlab_ci:
             _cmd = self.__replace_docker_host(_cmd)
 
+        task_env = os.environ.copy()
         # inject env
         if _env is not None:
             for env, value in _env.items():
@@ -901,11 +902,11 @@ class TaskRunner:
                     if env not in os.environ:
                         __env = self.__parse_envs(env, _task)
                         if __env:
-                            os.environ[env] = __env
+                            task_env[env] = __env
                 else:
                     __env = self.__parse_envs(env, _task)
                     if __env:
-                        os.environ[env] = __env
+                        task_env[env] = __env
 
         # we need to change the cwd if it's set
         if _cwd is not None:
@@ -917,6 +918,7 @@ class TaskRunner:
 
         # execute the task
         _cmd_join = f"{_cmd} {' '.join(_args)}{_is_background}"
+        print(_cmd_join)
 
         if self.__debug:
             print(f"Command: {_task.command}", color=Color.YELLOW, flush=True)
@@ -931,7 +933,7 @@ class TaskRunner:
             [_cmd, *_args] if not _shell else _cmd_join,
             stdout=None,
             stderr=None,
-            env=os.environ,
+            env=task_env,
             shell=_shell,
             executable="/bin/bash" if _shell else None
         )
