@@ -947,4 +947,4 @@ class TaskRunner:
 
         if _ret.returncode != 0:
             print(f"> TASK [{label}] exited with error code [{_ret.returncode}] <", color=Color.RED)
-            raise RuntimeError(f"Error running task: {label}")
+            raise RuntimeError(f"Error running taskd: {label}")
