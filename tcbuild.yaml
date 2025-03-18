@@ -9,7 +9,7 @@ input:
     toradex-feed:
       version: "7.1.0"
       release: quarterly
-      machine: verdin-imx8mm
+      machine: verdin-imx8mp
       distro: torizon
       variant: torizon-docker
       build-number: 4
