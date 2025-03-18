@@ -558,7 +558,7 @@ class TaskRunner:
                     _p_ret = subprocess.run(
                         [
                             "xonsh",
-                            "./conf/torizon-io.xsh",
+                            "./.conf/torizon-io.xsh",
                             "package", "latest", "version",
                             os.environ["config:tcb_packageName"]
                         ],

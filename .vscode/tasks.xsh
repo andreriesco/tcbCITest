@@ -9,21 +9,20 @@
 
 # use the xonsh environment to update the OS environment
 $UPDATE_OS_ENVIRON = True
-# Get the full log of error
-$XONSH_SHOW_TRACEBACK = True
 # always return if a cmd fails
 $RAISE_SUBPROC_ERROR = True
 
 import os
 import sys
 import traceback
-import torizon_templates_utils.tasks as vscode_tasks
-from torizon_templates_utils import debug
+sys.path.append(".conf/pip")
+import torizon_templates_utils3.tasks as vscode_tasks
+from torizon_templates_utils3 import debug
 from torizon_templates_utils.errors import Error,Error_Out,last_return_code
 from torizon_templates_utils.colors import Color,BgColor,print
 
 ## In case of fire break glass
-# debug.vscode_prepare()
+#debug.vscode_prepare()
 # debug.breakpoint()
 
 _script_root = os.path.dirname(os.path.realpath(__file__))
@@ -111,7 +110,7 @@ os.chdir(_script_root)
 ## __main__
 # aesthetic
 print("")
-
+#debug.breakpoint()
 _tasks_settings_json = "settings.json"
 if "TASKS_CUSTOM_SETTINGS_JSON" in os.environ:
     print("ℹ️ :: CUSTOM SETTINGS :: ℹ️")
