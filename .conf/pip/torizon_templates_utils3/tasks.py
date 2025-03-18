@@ -835,6 +835,17 @@ class TaskRunner:
         if _task is None:
             raise ReferenceError(f"Task with label [{label}] not found")
 
+        _depends = []
+        if _task.dependsOn is not None:
+            _depends = _task.dependsOn
+
+        # first we need to run the dependencies
+        for dep in _depends:
+            self.run_task(dep)
+
+        print("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
+        print(f"> Executing task: {label} <", color=Color.GREEN)
+
         # prepare the command
         _cmd = _task.command
 
@@ -857,17 +868,6 @@ class TaskRunner:
         if _task.options is not None:
             _env = _task.options.env
             _cwd = _task.options.cwd
-
-        _depends = []
-        if _task.dependsOn is not None:
-            _depends = _task.dependsOn
-
-        # first we need to run the dependencies
-        for dep in _depends:
-            self.run_task(dep)
-
-        print("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
-        print(f"> Executing task: {label} <", color=Color.GREEN)
 
         _is_background = ""
         if _task.isBackground:
