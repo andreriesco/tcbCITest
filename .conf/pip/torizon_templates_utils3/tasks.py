@@ -897,16 +897,10 @@ class TaskRunner:
         task_env = os.environ.copy()
         # inject env
         if _env is not None:
-            for env, value in _env.items():
-                if self.__override_env:
-                    if env not in os.environ:
-                        __env = self.__parse_envs(env, _task)
-                        if __env:
-                            task_env[env] = __env
-                else:
-                    __env = self.__parse_envs(env, _task)
-                    if __env:
-                        task_env[env] = __env
+            for env, _ in _env.items():
+                if self.__override_env == True or env not in os.environ:
+                    __parsed_env_value = self.__parse_envs(env, _task)
+                    task_env[env] = __parsed_env_value
 
         # we need to change the cwd if it's set
         if _cwd is not None:
