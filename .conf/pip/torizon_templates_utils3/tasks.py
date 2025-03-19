@@ -895,7 +895,7 @@ class TaskRunner:
             _cmd = self.__replace_docker_host(_cmd)
 
         task_env = os.environ.copy()
-        # inject env
+        # Replace env vars with the values present on the task env var
         if _env is not None:
             for env, _ in _env.items():
                 if self.__override_env == True or env not in os.environ:
